@@ -33,7 +33,6 @@ public class ResidenceActivity extends AppCompatActivity implements TextWatcher,
     setContentView(R.layout.activity_residence);
 
     geolocation = (EditText) findViewById(R.id.geolocation);
-    residence = new Residence();
 
     // Register a TextWatcher in the EditText geolocation object
     geolocation.addTextChangedListener(this);
