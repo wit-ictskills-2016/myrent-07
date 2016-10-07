@@ -11,7 +11,6 @@ import org.wit.myrent.models.Residence;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,6 +29,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import static org.wit.android.helpers.ContactHelper.sendEmail;
 import static org.wit.android.helpers.IntentHelper.navigateUp;
+import static org.wit.android.helpers.IntentHelper.selectContact;
 
 
 public class ResidenceFragment extends Fragment implements TextWatcher,
@@ -49,6 +49,8 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
 
   private Residence   residence;
   private Portfolio   portfolio;
+
+  String emailAddress = "";
 
   MyRentApp app;
 
@@ -135,8 +137,9 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
     if (requestCode == REQUEST_CONTACT)
     {
       String name = ContactHelper.getContact(getActivity(), data);
+      emailAddress = ContactHelper.getEmail(getActivity(), data);
+      tenantButton.setText(name + " : " + emailAddress);
       residence.tenant = name;
-      tenantButton.setText(name);
     }
   }
 
@@ -166,18 +169,19 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
   {
     switch (v.getId())
     {
-      case R.id.registration_date      : Calendar c = Calendar.getInstance();
+      case R.id.registration_date :
+        Calendar c = Calendar.getInstance();
         DatePickerDialog dpd = new DatePickerDialog (getActivity(), this, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
         dpd.show();
         break;
-      case R.id.tenant                 : Intent i = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-        startActivityForResult(i, REQUEST_CONTACT);
-        if (residence.tenant != null)
-        {
-          tenantButton.setText("Tenant: "+residence.tenant);
-        }
+
+      case R.id.tenant :
+        selectContact(getActivity(), REQUEST_CONTACT);
         break;
-      case R.id.residence_reportButton : sendEmail(getActivity(), "", getString(R.string.residence_report_subject), residence.getResidenceReport(getActivity()));
+
+      case R.id.residence_reportButton :
+        sendEmail(getActivity(), emailAddress,
+            getString(R.string.residence_report_subject), residence.getResidenceReport(getActivity()));
         break;
 
     }
