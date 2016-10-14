@@ -73,9 +73,6 @@ public class ResidenceFragment extends Fragment implements TextWatcher,
     super.onCreateView(inflater,  parent, savedInstanceState);
     View v = inflater.inflate(R.layout.fragment_residence, parent, false);
 
-    ResidenceActivity residenceActivity = (ResidenceActivity)getActivity();
-    residenceActivity.actionBar.setDisplayHomeAsUpEnabled(true);
-
     addListeners(v);
     updateControls(residence);
 
